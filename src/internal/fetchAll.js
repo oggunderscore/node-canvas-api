@@ -1,4 +1,5 @@
 var request = require('request-promise');
+let canvasAPI = require("node-canvas-api");
 
 var linkparser = require('parse-link-header');
 
@@ -6,24 +7,27 @@ var Bottleneck = require('bottleneck');
 
 require('dotenv').config();
 
-const token = process.env.CANVAS_API_TOKEN;
-
 const limiter = new Bottleneck({
   maxConcurrent: 20,
   minTime: 100
 });
 
-const requestObj = url => ({
-  'method': 'GET',
-  'uri': url,
-  'json': true,
-  'resolveWithFullResponse': true,
-  'headers': {
-    'Authorization': 'Bearer ' + token
+function getReqObj(url) {
+  const processedVariable = canvasAPI.getProcessedVariable(); // Access the processed variable
+  const requestObj = {
+    'method': 'GET',
+    'uri': url,
+    'json': true,
+    'resolveWithFullResponse': true,
+    'headers': {
+      'Authorization': 'Bearer ' + processedVariable.variable
+    },
   }
-});
 
-const fetchAll = (url, result = []) => request(requestObj(url)).then(response => {
+  return requestObj;
+}
+
+const fetchAll = (url, result = []) => request(getReqObj(url)).then(response => {
   result = [...result, ...response.body];
   const links = linkparser(response.headers.link);
   return links.next ? fetchAll(links.next.url, result) : result;

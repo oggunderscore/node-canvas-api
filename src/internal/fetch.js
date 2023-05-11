@@ -1,28 +1,38 @@
 var request = require('request-promise');
+let canvasAPI = require("node-canvas-api");
+
 
 var Bottleneck = require('bottleneck');
 
-require('dotenv').config();
-
-const token = process.env.CANVAS_API_TOKEN;
+require('dotenv').config({ override: true });
 
 const limiter = new Bottleneck({
   maxConcurrent: 20,
   minTime: 100
 });
 
-const requestObj = url => ({
-  'method': 'GET',
-  'uri': url,
-  'json': true,
-  'resolveWithFullResponse': true,
-  'headers': {
-    'Authorization': 'Bearer ' + token
+function getReqObj(url) {
+  const processedVariable = canvasAPI.getProcessedVariable(); // Access the processed variable
+  console.log("Created with Token: " + processedVariable.variable);
+  const requestObj = {
+    'method': 'GET',
+    'uri': url,
+    'json': true,
+    'resolveWithFullResponse': true,
+    'headers': {
+      'Authorization': 'Bearer ' + processedVariable.variable
+    },
   }
-});
 
-const fetch = url => request(requestObj(url)).then(response => response.body);
+  return requestObj;
+}
+
+
+const fetch = url => request(getReqObj(url)).then(response => response.body);
+
 
 const fetchRateLimited = limiter.wrap(fetch);
+
+
 
 module.exports = fetchRateLimited;

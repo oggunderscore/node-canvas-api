@@ -70,6 +70,16 @@ const getOptions = {
       completed: 'enrollment_state=completed'
     }
   },
+  assignments: {
+    state: {
+      future: 'state[]=future',
+      upcoming: 'state[]=upcoming'
+    },
+    graded_submission_exist: {
+      true: 'graded_submission_exist[]=true',
+      false: 'graded_submission_exist[]=false',
+    },
+  },
   account: {
     with_enrollments: 'with_enrollments=true',
     enrollment_type: role => `enrollment_type[]=${encodeURIComponent(role)}`,

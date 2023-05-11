@@ -1,4 +1,18 @@
-module.exports = {};
+
+let processedVariable;
+module.exports = {
+
+    processVariable: function (variable) {
+        // Perform actions or use the shared variable as needed
+        console.log('Processing variable:', variable);
+        processedVariable = variable; // Store the processed variable
+
+        // Additional code here...
+    },
+    getProcessedVariable: function () {
+        return processedVariable; // Return the processed variable
+    }
+};
 module.exports.batchCopyCourseContent = require('./batchCopyCourseContent');
 module.exports.copyCourseContent = require('./copyCourseContent');
 module.exports.createCourse = require('./createCourse');
